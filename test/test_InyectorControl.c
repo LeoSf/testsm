@@ -14,7 +14,7 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
-#include "unity_fixture.h"
+#include "unity.h"
 #include "InyectorControl.h"
 #include "Mock_InyectorControlAct.h"
 
@@ -22,8 +22,6 @@
 /* ------------------------------- Constants ------------------------------- */
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
-TEST_GROUP(Structure);
-
 /* ---------------------------- Local variables ---------------------------- */
 static int state, expectNextState;
 static Event event;
@@ -39,25 +37,29 @@ setProfile(int currState, int nextState, int signal)
 }
 
 /* ---------------------------- Global functions --------------------------- */
-TEST_SETUP(Structure)
+void
+setUp(void)
 {
     Mock_InyectorControlAct_Init();
 }
 
-TEST_TEAR_DOWN(Structure)
+void
+tearDown(void)
 {
     Mock_InyectorControlAct_Verify();
     Mock_InyectorControlAct_Destroy();
 }
 
-TEST(Structure, DefaultStateAfterInit)
+void
+test_DefaultStateAfterInit(void)
 {
     InyectorControlAct_init_Expect();
     expectNextState = InyectorControl_init();
     TEST_ASSERT_EQUAL(off, expectNextState);
 }
 
-TEST(Structure, AnUnhandledEventDoesNotChangeState)
+void
+test_AnUnhandledEventDoesNotChangeState(void)
 {
     setProfile(off, UNHANDLED_EVENT, evStartTimeout);
     state = InyectorControl_dispatch(&event);
@@ -65,7 +67,8 @@ TEST(Structure, AnUnhandledEventDoesNotChangeState)
     TEST_ASSERT_EQUAL(off, InyectorControl_getState());
 }
 
-TEST(Structure, StateTransitionTableForOff)
+void
+test_StateTransitionTableForOff(void)
 {
     setProfile(off, starting, evStart);
     InyectorControlAct_starting_Expect(&event);
@@ -73,7 +76,8 @@ TEST(Structure, StateTransitionTableForOff)
     TEST_ASSERT_EQUAL(expectNextState, state);
 }
 
-TEST(Structure, StateTransitionTableForStarting)
+void
+test_StateTransitionTableForStarting(void)
 {
     setProfile(starting, idleSpeed, evStartTimeout);
     state = InyectorControl_dispatch(&event);

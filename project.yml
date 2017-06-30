@@ -33,7 +33,6 @@
     - src/**
   :include:
     - inc/**
-    - vendor/ceedling/vendor/unity/extras/fixture/src/
   :support:
     - test/support
 
