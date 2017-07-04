@@ -52,7 +52,10 @@
   :mock_prefix: Mock_
   :when_no_prototypes: :warn
   :enforce_strict_ordering: TRUE
+  :callback_after_arg_check: TRUE
+  :when_ptr: :compare_ptr
   :plugins:
+    - :ignore_arg
     - :ignore
     - :callback
   :treat_as:
