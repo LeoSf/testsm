@@ -34,4 +34,55 @@ InyectorControl_init(void)
     return state;
 }
 
+int
+InyectorControl_dispatch(Event *event)
+{
+    int result;
+
+    switch (state)
+    {
+        case off:
+            if (event->signal == evStart)
+            {
+                InyectorControlAct_starting(event);
+                state = starting;
+                result = state;
+            }
+            else
+            {
+                result = UNHANDLED_EVENT;
+            }
+            break;
+        case starting:
+            if (event->signal == evStartTimeout)
+            {
+                state = idleSpeed;
+                result = state;
+            }
+            else
+            {
+                result = UNHANDLED_EVENT;
+            }
+            break;
+        case idleSpeed:
+            result = UNHANDLED_EVENT;
+            break;
+        default:
+            break;
+    }
+    return result;
+}
+
+void 
+InyectorControl_setState(int currState)
+{
+    state = currState;
+}
+
+int 
+InyectorControl_getState(void)
+{
+    return state;
+}
+
 /* ------------------------------ File footer ------------------------------ */
