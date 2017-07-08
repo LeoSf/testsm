@@ -1,10 +1,10 @@
 /** 
- * \file InyectorControlAct.h 
+ * \file TempSensor.h 
  */
 
 /* -------------------------- Development history -------------------------- */
 /*
- *  2015.10.24  LeFr  v2.4.05  Initial version
+ *  2017.06.20  LeFr  v2.4.05  Initial version
  */
 
 /* -------------------------------- Authors -------------------------------- */
@@ -14,12 +14,10 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __INYECTORCONTROLACT_H__
-#define __INYECTORCONTROLACT_H__
+#ifndef __TEMPSENSOR_H__
+#define __TEMPSENSOR_H__
  
 /* ----------------------------- Include files ----------------------------- */
-#include "InyectorControl.h"
-
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
 extern "C" {
@@ -28,23 +26,11 @@ extern "C" {
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
 /* ------------------------------- Data types ------------------------------ */
+typedef struct TempSensor TempSensor;
+
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-/* Init action */
-void InyectorControlAct_init(void);
-
-/* Effect actions */
-void InyectorControlAct_onIdleSpeed(Event *event);
-void InyectorControlAct_onNormal(Event *event);
-
-/* Guard actions */
-bool InyectorControlAct_isPressedThrottle(Event *event);
-bool InyectorControlAct_isReleasedThrottle(Event *event);
-
-/* Entry actions */
-void InyectorControlAct_starting(Event *event);
-
-/* Exit actions */
+TempSensor *TempSensor_init(void);
  
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

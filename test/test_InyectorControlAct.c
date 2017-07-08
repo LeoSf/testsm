@@ -46,6 +46,9 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "unity.h"
 #include "InyectorControlAct.h"
+#include "Mock_RPMControl.h"
+#include "Mock_TempSensor.h"
+#include "Mock_RPMSensor.h"
 #include "Mock_ThrottleSensor.h"
 #include "Mock_PWMInyector.h"
 #include "Mock_Sensor.h"
@@ -64,6 +67,9 @@ static Event event;
 void
 setUp(void)
 {
+    Mock_RPMControl_Init();
+    Mock_TempSensor_Init();
+    Mock_RPMSensor_Init();
     Mock_ThrottleSensor_Init();
     Mock_PWMInyector_Init();
     Mock_Sensor_Init();
@@ -73,10 +79,16 @@ setUp(void)
 void
 tearDown(void)
 {
+    Mock_RPMControl_Verify();
+    Mock_TempSensor_Verify();
+    Mock_RPMSensor_Verify();
     Mock_ThrottleSensor_Verify();
     Mock_PWMInyector_Verify();
     Mock_Sensor_Verify();
     Mock_Timer_Verify();
+    Mock_RPMControl_Destroy();
+    Mock_TempSensor_Destroy();
+    Mock_RPMSensor_Destroy();
     Mock_ThrottleSensor_Destroy();
     Mock_PWMInyector_Destroy();
     Mock_Sensor_Destroy();
@@ -86,10 +98,16 @@ tearDown(void)
 void
 test_SetInitialValuesAfterInit(void)
 {
+    TempSensor *temp = (TempSensor *)0xdeadbeef;
+    RPMSensor *rpm = (RPMSensor *)0xdeadbeef;
     ThrottleSensor *throttle = (ThrottleSensor *)0xdeadbeef;
     Timer *tmr = (Timer *)0xdeadbeef;
 
+    TempSensor_init_ExpectAndReturn(temp);
+    RPMSensor_init_ExpectAndReturn(rpm);
     ThrottleSensor_init_ExpectAndReturn(throttle);
+    RPMControl_init_Expect(IDLE_MIN_DUTY, IDLE_MAX_DUTY, IDLE_RPM, 
+                           IDLE_RPM_THH, IDLE_RPM_THL);
     PWMInyector_init_Expect();
     Timer_init_ExpectAndReturn(START_TIME, 0, evStartTimeout, tmr);
 
@@ -107,16 +125,6 @@ test_SetDutyTo50ForAWhileOnStart(void)
     PWMInyector_setDuty_Expect(START_DUTY);
 
     InyectorControlAct_starting(&event);
-}
-
-void
-test_SetDutyToMinForIdleSpeed(void)
-{
-    event.signal = evStartTimeout;
-
-    PWMInyector_setDuty_Expect(IDLE_MIN_DUTY);
-
-    InyectorControlAct_entryIdleSpeed(&event);
 }
 
 void
@@ -144,6 +152,57 @@ test_CheckPressedThrottle(void)
 
     result = InyectorControlAct_isPressedThrottle(&event);
     TEST_ASSERT_EQUAL(true, result);
+}
+
+void
+test_SetDutyLinearlyWithThrottle(void)
+{
+    Sensor *sensor = (Sensor *)0xdeadbeef;
+    int throttleValues[4] = {THROTTLE_MIN + 5, 
+                             THROTTLE_MIN + 10,
+                             THROTTLE_MIN + 20,
+                             THROTTLE_MIN + 30};
+    int *pThrottleValue;
+
+    event.signal = evTick;
+
+    for (pThrottleValue = throttleValues; 
+         pThrottleValue < throttleValues + 4; 
+         ++pThrottleValue)
+    {
+        Sensor_get_ExpectAndReturn(sensor, *pThrottleValue);
+        Sensor_get_IgnoreArg_me();
+
+        Sensor_get_ExpectAndReturn(sensor, 90);
+        Sensor_get_IgnoreArg_me();
+        Sensor_get_ExpectAndReturn(sensor, 0);   /* Ignore RPM */
+        Sensor_get_IgnoreArg_me();
+        PWMInyector_setDuty_Expect(*pThrottleValue);
+
+        InyectorControlAct_isPressedThrottle(&event);
+        InyectorControlAct_onNormal(&event);
+    }
+}
+
+void
+test_IncrementDutyForColdEngine(void)
+{
+    Sensor *sensor = (Sensor *)0xdeadbeef;
+    unsigned char duty = THROTTLE_MIN + 20;
+
+    event.signal = evTick;
+
+    Sensor_get_ExpectAndReturn(sensor, duty);
+    Sensor_get_IgnoreArg_me();
+
+    Sensor_get_ExpectAndReturn(sensor, ENGINE_MIN_TEMP - 1);
+    Sensor_get_IgnoreArg_me();
+    Sensor_get_ExpectAndReturn(sensor, 0);   /* Ignore RPM */
+    Sensor_get_IgnoreArg_me();
+    PWMInyector_setDuty_Expect(duty + INC_DUTY_FOR_COLD);
+
+    InyectorControlAct_isPressedThrottle(&event);
+    InyectorControlAct_onNormal(&event);
 }
 
 /* ------------------------------ File footer ------------------------------ */
