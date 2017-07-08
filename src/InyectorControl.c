@@ -56,6 +56,7 @@ InyectorControl_dispatch(Event *event)
         case starting:
             if (event->signal == evStartTimeout)
             {
+                InyectorControlAct_entryIdleSpeed(event);
                 state = idleSpeed;
                 result = state;
             }
