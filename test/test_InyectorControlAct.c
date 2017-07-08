@@ -53,6 +53,8 @@
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
+static Event event;
+
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Local functions ---------------------------- */
 /* ---------------------------- Global functions --------------------------- */
@@ -77,6 +79,18 @@ test_SetInitialValuesAfterInit(void)
     Timer_init_ExpectAndReturn(START_TIME, 0, evStartTimeout, tmr);
 
     InyectorControlAct_init();
+}
+
+void
+test_SetDutyTo50ForAWhileOnStart(void)
+{
+    Timer *tmr = (Timer *)0xdeadbeef;
+    event.signal = evStart;
+
+    Timer_start_Expect(tmr);
+    Timer_start_IgnoreArg_me();
+
+    InyectorControlAct_starting(&event);
 }
 
 /* ------------------------------ File footer ------------------------------ */

@@ -36,5 +36,11 @@ InyectorControlAct_init(void)
 /* Effect actions */
 /* Guard actions */
 /* Entry actions */
+void 
+InyectorControlAct_starting(Event *event)
+{
+    Timer_start(startTmr);
+}
+
 /* Exit actions */
 /* ------------------------------ File footer ------------------------------ */
