@@ -105,4 +105,13 @@ test_StateTransitionTableForStarting(void)
     TEST_ASSERT_EQUAL(expectNextState, state);
 }
 
+void
+test_AnUnhandledEventDoesNotChangeState(void)
+{
+    setProfile(off, UNHANDLED_EVENT, evStartTimeout);
+    state = InyectorControl_dispatch(&event);
+    TEST_ASSERT_EQUAL(expectNextState, state);
+    TEST_ASSERT_EQUAL(off, InyectorControl_getState());
+}
+
 /* ------------------------------ File footer ------------------------------ */
