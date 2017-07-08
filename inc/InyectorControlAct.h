@@ -37,6 +37,7 @@ void InyectorControlAct_init(void);
 /* Guard actions */
 /* Entry actions */
 void InyectorControlAct_starting(Event *event);
+void InyectorControlAct_entryIdleSpeed(Event *event);
 
 /* Exit actions */
  

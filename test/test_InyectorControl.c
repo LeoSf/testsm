@@ -101,6 +101,7 @@ void
 test_StateTransitionTableForStarting(void)
 {
     setProfile(starting, idleSpeed, evStartTimeout);
+    InyectorControlAct_entryIdleSpeed_Expect(&event);
     state = InyectorControl_dispatch(&event);
     TEST_ASSERT_EQUAL(expectNextState, state);
 }
