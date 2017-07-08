@@ -36,6 +36,8 @@ void InyectorControlAct_init(void);
 /* Effect actions */
 /* Guard actions */
 /* Entry actions */
+void InyectorControlAct_starting(Event *event);
+
 /* Exit actions */
  
 /* -------------------- External C language linkage end -------------------- */
