@@ -15,6 +15,7 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "InyectorControl.h"
+#include "PWMInyector.h"
 #include "Timer.h"
 
 /* ----------------------------- Local macros ------------------------------ */
@@ -22,6 +23,7 @@
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
+static unsigned char duty;
 static Timer *startTmr;
 
 /* ----------------------- Local function prototypes ----------------------- */
@@ -30,6 +32,9 @@ static Timer *startTmr;
 void 
 InyectorControlAct_init(void)
 {
+    duty = 0;
+
+    PWMInyector_init();
     startTmr = Timer_init(START_TIME, 0, evStartTimeout);
 }
 
@@ -40,6 +45,13 @@ void
 InyectorControlAct_starting(Event *event)
 {
     Timer_start(startTmr);
+    PWMInyector_setDuty(START_DUTY);
+}
+
+void 
+InyectorControlAct_entryIdleSpeed(Event *event)
+{
+    PWMInyector_setDuty(IDLE_MIN_DUTY);
 }
 
 /* Exit actions */
