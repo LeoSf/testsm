@@ -46,7 +46,9 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "unity.h"
 #include "InyectorControlAct.h"
+#include "Mock_ThrottleSensor.h"
 #include "Mock_PWMInyector.h"
+#include "Mock_Sensor.h"
 #include "Mock_Timer.h"
 
 /* ----------------------------- Local macros ------------------------------ */
@@ -62,24 +64,32 @@ static Event event;
 void
 setUp(void)
 {
+    Mock_ThrottleSensor_Init();
     Mock_PWMInyector_Init();
+    Mock_Sensor_Init();
     Mock_Timer_Init();
 }
 
 void
 tearDown(void)
 {
+    Mock_ThrottleSensor_Verify();
     Mock_PWMInyector_Verify();
+    Mock_Sensor_Verify();
     Mock_Timer_Verify();
+    Mock_ThrottleSensor_Destroy();
     Mock_PWMInyector_Destroy();
+    Mock_Sensor_Destroy();
     Mock_Timer_Destroy();
 }
 
 void
 test_SetInitialValuesAfterInit(void)
 {
+    ThrottleSensor *throttle = (ThrottleSensor *)0xdeadbeef;
     Timer *tmr = (Timer *)0xdeadbeef;
 
+    ThrottleSensor_init_ExpectAndReturn(throttle);
     PWMInyector_init_Expect();
     Timer_init_ExpectAndReturn(START_TIME, 0, evStartTimeout, tmr);
 
@@ -107,6 +117,33 @@ test_SetDutyToMinForIdleSpeed(void)
     PWMInyector_setDuty_Expect(IDLE_MIN_DUTY);
 
     InyectorControlAct_entryIdleSpeed(&event);
+}
+
+void
+test_CheckPressedThrottle(void)
+{
+    bool result;
+    Sensor *sensor = (Sensor *)0xdeadbeef;
+
+    event.signal = evTick;
+
+    Sensor_get_ExpectAndReturn(sensor, THROTTLE_MIN - 1);
+    Sensor_get_IgnoreArg_me();
+
+    result = InyectorControlAct_isPressedThrottle(&event);
+    TEST_ASSERT_EQUAL(false, result);
+
+    Sensor_get_ExpectAndReturn(sensor, THROTTLE_MIN);
+    Sensor_get_IgnoreArg_me();
+
+    result = InyectorControlAct_isPressedThrottle(&event);
+    TEST_ASSERT_EQUAL(false, result);
+
+    Sensor_get_ExpectAndReturn(sensor, THROTTLE_MIN + 1);
+    Sensor_get_IgnoreArg_me();
+
+    result = InyectorControlAct_isPressedThrottle(&event);
+    TEST_ASSERT_EQUAL(true, result);
 }
 
 /* ------------------------------ File footer ------------------------------ */

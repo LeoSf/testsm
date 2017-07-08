@@ -15,7 +15,9 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "InyectorControl.h"
+#include "ThrottleSensor.h"
 #include "PWMInyector.h"
+#include "Sensor.h"
 #include "Timer.h"
 
 /* ----------------------------- Local macros ------------------------------ */
@@ -23,6 +25,8 @@
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
+static int throttleVal;
+static ThrottleSensor *throttle;
 static unsigned char duty;
 static Timer *startTmr;
 
@@ -32,14 +36,31 @@ static Timer *startTmr;
 void 
 InyectorControlAct_init(void)
 {
+    throttleVal = 0;
     duty = 0;
 
+    throttle = ThrottleSensor_init();
     PWMInyector_init();
     startTmr = Timer_init(START_TIME, 0, evStartTimeout);
 }
 
 /* Effect actions */
 /* Guard actions */
+bool 
+InyectorControlAct_isPressedThrottle(Event *event)
+{
+    throttleVal = Sensor_get((Sensor *)throttle);
+    return throttleVal > THROTTLE_MIN;
+}
+
+bool 
+InyectorControlAct_isReleasedThrottle(Event *event)
+{
+    throttleVal  = Sensor_get((Sensor *)throttle);
+    return throttleVal <= THROTTLE_MIN;
+}
+
+
 /* Entry actions */
 void 
 InyectorControlAct_starting(Event *event)

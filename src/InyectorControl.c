@@ -66,7 +66,32 @@ InyectorControl_dispatch(Event *event)
             }
             break;
         case idleSpeed:
-            result = UNHANDLED_EVENT;
+            if (event->signal == evTick)
+            {
+                if (InyectorControlAct_isPressedThrottle(event))
+                {
+                    state = normal;
+                }
+                result = state;
+            }
+            else
+            {
+                result = UNHANDLED_EVENT;
+            }
+            break;
+        case normal:
+            if (event->signal == evTick)
+            {
+                if (InyectorControlAct_isReleasedThrottle(event))
+                {
+                    state = idleSpeed;
+                }
+                result = state;
+            }
+            else
+            {
+                result = UNHANDLED_EVENT;
+            }
             break;
         default:
             break;

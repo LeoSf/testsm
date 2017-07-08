@@ -1,5 +1,5 @@
 /** 
- * \file InyectorControl.h 
+ * \file PWMInyector.h 
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -14,8 +14,8 @@
 
 /* --------------------------------- Notes --------------------------------- */
 /* --------------------------------- Module -------------------------------- */
-#ifndef __INYECTORCONTROL_H__
-#define __INYECTORCONTROL_H__
+#ifndef __PWMINYECTOR_H__
+#define __PWMINYECTOR_H__
  
 /* ----------------------------- Include files ----------------------------- */
 /* ---------------------- External C language linkage ---------------------- */
@@ -25,50 +25,11 @@ extern "C" {
 
 /* --------------------------------- Macros -------------------------------- */
 /* -------------------------------- Constants ------------------------------ */
-#define START_TIME          2000    /* In milliseconds */
-#define START_DUTY          50      /* In percentage */
-#define IDLE_MIN_DUTY       20      /* In percentage */
-#define IDLE_MAX_DUTY       30      /* In percentage */
-#define THROTTLE_MIN        30      /* Throttle pedal position */
-#define THROTTLE_MAX        80      /* Throttle pedal position */
-#define IDLE_RPM            2000    /* In RPM */
-#define IDLE_RPM_THH        20      /* In RPM */
-#define IDLE_RPM_THL        20      /* In RPM */
-#define INC_DUTY_FOR_COLD   10      /* In percentage */
-#define TICK_TIME           100     /* In milliseconds */
-#define ENGINE_MIN_TEMP     70      /* In Celcius */
-
-#define UNHANDLED_EVENT     (-1)
-#define false               0
-#define true                1
-
-/* States */
-enum
-{
-    off, starting, idleSpeed, normal
-};
- 
-/* Event signals */
-enum
-{
-    evStart, evTick, evStartTimeout
-};
- 
 /* ------------------------------- Data types ------------------------------ */
-typedef struct Event Event;
-struct Event
-{
-    int signal;
-};
- 
-typedef int bool;
-
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
-int InyectorControl_init(void);
-int InyectorControl_dispatch(Event *event);
-void InyectorControl_setState(int currState);
-int InyectorControl_getState(void);
+void PWMInyector_init(void);
+void PWMInyector_setDuty(unsigned char duty);
  
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus

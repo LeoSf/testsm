@@ -115,4 +115,32 @@ test_AnUnhandledEventDoesNotChangeState(void)
     TEST_ASSERT_EQUAL(off, InyectorControl_getState());
 }
 
+void
+test_StateTransitionTableForIdleSpeed(void)
+{
+    setProfile(idleSpeed, normal, evTick);
+    InyectorControlAct_isPressedThrottle_ExpectAndReturn(&event, true);
+    state = InyectorControl_dispatch(&event);
+    TEST_ASSERT_EQUAL(expectNextState, state);
+
+    setProfile(idleSpeed, idleSpeed, evTick);
+    InyectorControlAct_isPressedThrottle_ExpectAndReturn(&event, false);
+    state = InyectorControl_dispatch(&event);
+    TEST_ASSERT_EQUAL(expectNextState, state);
+}
+
+void
+test_StateTransitionTableForNormal(void)
+{
+    setProfile(normal, idleSpeed, evTick);
+    InyectorControlAct_isReleasedThrottle_ExpectAndReturn(&event, true);
+    state = InyectorControl_dispatch(&event);
+    TEST_ASSERT_EQUAL(expectNextState, state);
+
+    setProfile(normal, normal, evTick);
+    InyectorControlAct_isReleasedThrottle_ExpectAndReturn(&event, false);
+    state = InyectorControl_dispatch(&event);
+    TEST_ASSERT_EQUAL(expectNextState, state);
+}
+
 /* ------------------------------ File footer ------------------------------ */
