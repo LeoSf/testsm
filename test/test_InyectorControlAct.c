@@ -46,6 +46,7 @@
 /* ----------------------------- Include files ----------------------------- */
 #include "unity.h"
 #include "InyectorControlAct.h"
+#include "Mock_PWMInyector.h"
 #include "Mock_Timer.h"
 
 /* ----------------------------- Local macros ------------------------------ */
@@ -61,13 +62,16 @@ static Event event;
 void
 setUp(void)
 {
+    Mock_PWMInyector_Init();
     Mock_Timer_Init();
 }
 
 void
 tearDown(void)
 {
+    Mock_PWMInyector_Verify();
     Mock_Timer_Verify();
+    Mock_PWMInyector_Destroy();
     Mock_Timer_Destroy();
 }
 
@@ -76,6 +80,7 @@ test_SetInitialValuesAfterInit(void)
 {
     Timer *tmr = (Timer *)0xdeadbeef;
 
+    PWMInyector_init_Expect();
     Timer_init_ExpectAndReturn(START_TIME, 0, evStartTimeout, tmr);
 
     InyectorControlAct_init();
@@ -89,8 +94,19 @@ test_SetDutyTo50ForAWhileOnStart(void)
 
     Timer_start_Expect(tmr);
     Timer_start_IgnoreArg_me();
+    PWMInyector_setDuty_Expect(START_DUTY);
 
     InyectorControlAct_starting(&event);
+}
+
+void
+test_SetDutyToMinForIdleSpeed(void)
+{
+    event.signal = evStartTimeout;
+
+    PWMInyector_setDuty_Expect(IDLE_MIN_DUTY);
+
+    InyectorControlAct_entryIdleSpeed(&event);
 }
 
 /* ------------------------------ File footer ------------------------------ */
