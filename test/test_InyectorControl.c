@@ -119,10 +119,12 @@ void
 test_StateTransitionTableForIdleSpeed(void)
 {
     setProfile(idleSpeed, normal, evTick);
+    InyectorControlAct_isPressedThrottle_ExpectAndReturn(&event, true);
     state = InyectorControl_dispatch(&event);
     TEST_ASSERT_EQUAL(expectNextState, state);
 
     setProfile(idleSpeed, idleSpeed, evTick);
+    InyectorControlAct_isPressedThrottle_ExpectAndReturn(&event, false);
     state = InyectorControl_dispatch(&event);
     TEST_ASSERT_EQUAL(expectNextState, state);
 }

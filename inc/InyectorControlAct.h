@@ -1,5 +1,5 @@
-/** 
- * \file InyectorControlAct.h 
+/**
+ * \file InyectorControlAct.h
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -16,7 +16,7 @@
 /* --------------------------------- Module -------------------------------- */
 #ifndef __INYECTORCONTROLACT_H__
 #define __INYECTORCONTROLACT_H__
- 
+
 /* ----------------------------- Include files ----------------------------- */
 #include "InyectorControl.h"
 
@@ -35,12 +35,13 @@ void InyectorControlAct_init(void);
 
 /* Effect actions */
 /* Guard actions */
+bool InyectorControlAct_isPressedThrottle(Event *event);
 /* Entry actions */
 void InyectorControlAct_starting(Event *event);
 void InyectorControlAct_entryIdleSpeed(Event *event);
 
 /* Exit actions */
- 
+
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
 }
