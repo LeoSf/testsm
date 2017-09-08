@@ -17,22 +17,22 @@
 /* --------------------------------- Notes --------------------------------- */
 /*     Test de estructura SM inyeccion de motor segun [AUTO-ER-0001]
  *
- *	[REQ0004] El software debe variar el ciclo de trabajo de la señal PWM 
+ *	[REQ0004] El software debe variar el ciclo de trabajo de la señal PWM
  *            de 1 KHz de frecuencia, que enviará hacia el inyector en función
  *            de los valores leídos de: el sensor de revoluciones por minuto,
- *            el sensor de posición de mariposa de admisión, 
- *            y el sensor de temperatura de motor. 
- *  [REQ0005] El software debe fijar un ciclo de trabajo de 50% en el PWM 
+ *            el sensor de posición de mariposa de admisión,
+ *            y el sensor de temperatura de motor.
+ *  [REQ0005] El software debe fijar un ciclo de trabajo de 50% en el PWM
  *            que envía hacia el inyector, durante 2 segundos luego de la
- *            señal de arranque del motor. 
- *  [REQ0006] El software debe fijar un ciclo de trabajo mínimo de entre 
- *            el 20% y el 30% en el PWM que envía hacia el inyector cuando 
+ *            señal de arranque del motor.
+ *  [REQ0006] El software debe fijar un ciclo de trabajo mínimo de entre
+ *            el 20% y el 30% en el PWM que envía hacia el inyector cuando
  *            el motor se encuentra “regulando”, para asegurar que el motor
  *            genere 2000 RPM +/- 20 RPM.
  *  [REQ0007] El software debe fijar un ciclo de trabajo entre 30% y 80% en
  *            el PWM que envía hacia el inyector en función proporcionalmente
  *            lineal en que la mariposa de admisión se encuentre abierta.
- *            (Nota: El pedal de aceleración del conductor se conecta 
+ *            (Nota: El pedal de aceleración del conductor se conecta
  *            mecánicamente con la mariposa de admisión. Cuando el pedal
  *            se encuentra sin presionar, la mariposa queda un 30% abierta.
  *            Cuando se presiona a fondo el pedal, la mariposa se abre un 80%.
@@ -113,6 +113,18 @@ test_AnUnhandledEventDoesNotChangeState(void)
     state = InyectorControl_dispatch(&event);
     TEST_ASSERT_EQUAL(expectNextState, state);
     TEST_ASSERT_EQUAL(off, InyectorControl_getState());
+}
+
+void
+test_StateTransitionTableForIdleSpeed(void)
+{
+    setProfile(idleSpeed, normal, evTick);
+    state = InyectorControl_dispatch(&event);
+    TEST_ASSERT_EQUAL(expectNextState, state);
+
+    setProfile(idleSpeed, idleSpeed, evTick);
+    state = InyectorControl_dispatch(&event);
+    TEST_ASSERT_EQUAL(expectNextState, state);
 }
 
 /* ------------------------------ File footer ------------------------------ */

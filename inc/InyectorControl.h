@@ -1,5 +1,5 @@
-/** 
- * \file InyectorControl.h 
+/**
+ * \file InyectorControl.h
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -16,7 +16,7 @@
 /* --------------------------------- Module -------------------------------- */
 #ifndef __INYECTORCONTROL_H__
 #define __INYECTORCONTROL_H__
- 
+
 /* ----------------------------- Include files ----------------------------- */
 /* ---------------------- External C language linkage ---------------------- */
 #ifdef __cplusplus
@@ -39,33 +39,37 @@ extern "C" {
 #define ENGINE_MIN_TEMP     70      /* In Celcius */
 
 #define UNHANDLED_EVENT     (-1)
+#define false               0
+#define true                1
 
 /* States */
 enum
 {
-    off, starting, idleSpeed
+    off, starting, idleSpeed, normal
 };
- 
+
 /* Event signals */
 enum
 {
-    evStart, evStartTimeout
+    evStart, evStartTimeout, evTick
 };
- 
+
 /* ------------------------------- Data types ------------------------------ */
 typedef struct Event Event;
 struct Event
 {
     int signal;
 };
- 
+
+typedef int bool;
+
 /* -------------------------- External variables --------------------------- */
 /* -------------------------- Function prototypes -------------------------- */
 int InyectorControl_init(void);
 int InyectorControl_dispatch(Event *event);
 void InyectorControl_setState(int currState);
 int InyectorControl_getState(void);
- 
+
 /* -------------------- External C language linkage end -------------------- */
 #ifdef __cplusplus
 }

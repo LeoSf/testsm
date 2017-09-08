@@ -1,7 +1,7 @@
 /**
  *  \file InyectorControl.c
  */
- 
+
 /* -------------------------- Development history -------------------------- */
 /*
  *  2017.06.20  LeFr  v2.4.05  Initial version
@@ -26,10 +26,10 @@ static int state;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Global functions --------------------------- */
-int 
+int
 InyectorControl_init(void)
 {
-    state = off; 
+    state = off;
     InyectorControlAct_init();
     return state;
 }
@@ -74,13 +74,13 @@ InyectorControl_dispatch(Event *event)
     return result;
 }
 
-void 
+void
 InyectorControl_setState(int currState)
 {
     state = currState;
 }
 
-int 
+int
 InyectorControl_getState(void)
 {
     return state;
