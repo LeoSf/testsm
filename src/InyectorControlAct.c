@@ -1,5 +1,5 @@
-/** 
- * \file InyectorControlAct.c 
+/**
+ * \file InyectorControlAct.c
  */
 
 /* -------------------------- Development history -------------------------- */
@@ -15,7 +15,9 @@
 /* --------------------------------- Notes --------------------------------- */
 /* ----------------------------- Include files ----------------------------- */
 #include "InyectorControl.h"
+#include "ThrottleSensor.h"
 #include "PWMInyector.h"
+#include "Sensor.h"
 #include "Timer.h"
 
 /* ----------------------------- Local macros ------------------------------ */
@@ -23,17 +25,21 @@
 /* ---------------------------- Local data types --------------------------- */
 /* ---------------------------- Global variables --------------------------- */
 /* ---------------------------- Local variables ---------------------------- */
+static int throttleVal;
+static ThrottleSensor *throttle;
 static unsigned char duty;
 static Timer *startTmr;
 
 /* ----------------------- Local function prototypes ----------------------- */
 /* ---------------------------- Global functions --------------------------- */
 /* Init action */
-void 
+void
 InyectorControlAct_init(void)
 {
+    throttleVal = 0;
     duty = 0;
 
+    throttle = ThrottleSensor_init();
     PWMInyector_init();
     startTmr = Timer_init(START_TIME, 0, evStartTimeout);
 }
@@ -41,14 +47,14 @@ InyectorControlAct_init(void)
 /* Effect actions */
 /* Guard actions */
 /* Entry actions */
-void 
+void
 InyectorControlAct_starting(Event *event)
 {
     Timer_start(startTmr);
     PWMInyector_setDuty(START_DUTY);
 }
 
-void 
+void
 InyectorControlAct_entryIdleSpeed(Event *event)
 {
     PWMInyector_setDuty(IDLE_MIN_DUTY);
