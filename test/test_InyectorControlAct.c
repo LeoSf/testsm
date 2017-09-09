@@ -119,4 +119,19 @@ test_SetDutyToMinForIdleSpeed(void)
     InyectorControlAct_entryIdleSpeed(&event);
 }
 
+void
+test_CheckPressedThrottle(void)
+{
+    bool result;
+    Sensor *sensor = (Sensor *)0xdeadbeef;
+
+    event.signal = evTick;
+
+    Sensor_get_ExpectAndReturn(sensor, THROTTLE_MIN - 1);
+    Sensor_get_IgnoreArg_me();
+
+    result = InyectorControlAct_isPressedThrottle(&event);
+    TEST_ASSERT_EQUAL(false, result);
+}
+
 /* ------------------------------ File footer ------------------------------ */
