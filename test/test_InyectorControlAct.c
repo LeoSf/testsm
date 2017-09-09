@@ -132,6 +132,18 @@ test_CheckPressedThrottle(void)
 
     result = InyectorControlAct_isPressedThrottle(&event);
     TEST_ASSERT_EQUAL(false, result);
+
+    Sensor_get_ExpectAndReturn(sensor, THROTTLE_MIN);
+    Sensor_get_IgnoreArg_me();
+
+    result = InyectorControlAct_isPressedThrottle(&event);
+    TEST_ASSERT_EQUAL(false, result);
+
+    Sensor_get_ExpectAndReturn(sensor, THROTTLE_MIN + 1);
+    Sensor_get_IgnoreArg_me();
+
+    result = InyectorControlAct_isPressedThrottle(&event);
+    TEST_ASSERT_EQUAL(true, result);
 }
 
 /* ------------------------------ File footer ------------------------------ */
