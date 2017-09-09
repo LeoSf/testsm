@@ -53,6 +53,14 @@ InyectorControlAct_isPressedThrottle(Event *event)
     return throttleVal > THROTTLE_MIN;
 }
 
+bool
+InyectorControlAct_isReleasedThrottle(Event *event)
+{
+    throttleVal  = Sensor_get((Sensor *)throttle);
+    return throttleVal <= THROTTLE_MIN;
+}
+
+
 /* Entry actions */
 void
 InyectorControlAct_starting(Event *event)

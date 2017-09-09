@@ -36,6 +36,8 @@ void InyectorControlAct_init(void);
 /* Effect actions */
 /* Guard actions */
 bool InyectorControlAct_isPressedThrottle(Event *event);
+bool InyectorControlAct_isReleasedThrottle(Event *event);
+
 /* Entry actions */
 void InyectorControlAct_starting(Event *event);
 void InyectorControlAct_entryIdleSpeed(Event *event);
