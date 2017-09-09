@@ -46,6 +46,13 @@ InyectorControlAct_init(void)
 
 /* Effect actions */
 /* Guard actions */
+bool
+InyectorControlAct_isPressedThrottle(Event *event)
+{
+    throttleVal = Sensor_get((Sensor *)throttle);
+    return throttleVal > THROTTLE_MIN;
+}
+
 /* Entry actions */
 void
 InyectorControlAct_starting(Event *event)
