@@ -56,7 +56,7 @@ InyectorControl_dispatch(Event *event)
         case starting:
             if (event->signal == evStartTimeout)
             {
-                InyectorControlAct_entryIdleSpeed(event);
+                // InyectorControlAct_entryIdleSpeed(event);
                 state = idleSpeed;
                 result = state;
             }
@@ -68,7 +68,11 @@ InyectorControl_dispatch(Event *event)
         case idleSpeed:
             if (event->signal == evTick)
             {
-                if (InyectorControlAct_isPressedThrottle(event))
+                if (InyectorControlAct_isReleasedThrottle(event))
+                {
+                    InyectorControlAct_onIdleSpeed(event);
+                }
+                else
                 {
                     state = normal;
                 }
@@ -82,7 +86,11 @@ InyectorControl_dispatch(Event *event)
         case normal:
             if (event->signal == evTick)
             {
-                if (InyectorControlAct_isReleasedThrottle(event))
+                if (InyectorControlAct_isPressedThrottle(event))
+                {
+                    InyectorControlAct_onNormal(event);
+                }
+                else
                 {
                     state = idleSpeed;
                 }

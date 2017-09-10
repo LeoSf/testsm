@@ -89,6 +89,15 @@ test_DefaultStateAfterInit(void)
 }
 
 void
+test_AnUnhandledEventDoesNotChangeState(void)
+{
+    setProfile(off, UNHANDLED_EVENT, evStartTimeout);
+    state = InyectorControl_dispatch(&event);
+    TEST_ASSERT_EQUAL(expectNextState, state);
+    TEST_ASSERT_EQUAL(off, InyectorControl_getState());
+}
+
+void
 test_StateTransitionTableForOff(void)
 {
     setProfile(off, starting, evStart);
@@ -101,32 +110,23 @@ void
 test_StateTransitionTableForStarting(void)
 {
     setProfile(starting, idleSpeed, evStartTimeout);
-    InyectorControlAct_entryIdleSpeed_Expect(&event);
+    // InyectorControlAct_entryIdleSpeed_Expect(&event);
     state = InyectorControl_dispatch(&event);
     TEST_ASSERT_EQUAL(expectNextState, state);
-}
-
-void
-test_AnUnhandledEventDoesNotChangeState(void)
-{
-    setProfile(off, UNHANDLED_EVENT, evStartTimeout);
-    state = InyectorControl_dispatch(&event);
-    TEST_ASSERT_EQUAL(expectNextState, state);
-    TEST_ASSERT_EQUAL(off, InyectorControl_getState());
 }
 
 void
 test_StateTransitionTableForIdleSpeed(void)
 {
-    setProfile(idleSpeed, normal, evTick);
-    InyectorControlAct_isPressedThrottle_ExpectAndReturn(&event, true);
+    setProfile(idleSpeed, idleSpeed, evTick);
+    InyectorControlAct_isReleasedThrottle_ExpectAndReturn(&event, true);
+    InyectorControlAct_onIdleSpeed_Expect(&event);
     state = InyectorControl_dispatch(&event);
     TEST_ASSERT_EQUAL(expectNextState, state);
 
-    setProfile(idleSpeed, idleSpeed, evTick);
-    InyectorControlAct_isPressedThrottle_ExpectAndReturn(&event, false);
+    setProfile(idleSpeed, normal, evTick);
+    InyectorControlAct_isReleasedThrottle_ExpectAndReturn(&event, false);
     state = InyectorControl_dispatch(&event);
     TEST_ASSERT_EQUAL(expectNextState, state);
 }
-
 /* ------------------------------ File footer ------------------------------ */

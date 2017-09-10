@@ -45,6 +45,19 @@ InyectorControlAct_init(void)
 }
 
 /* Effect actions */
+void
+InyectorControlAct_onIdleSpeed(Event *event)
+{
+    // TBD
+}
+
+void
+InyectorControlAct_onNormal(Event *event)
+{
+    // TBD
+}
+
+
 /* Guard actions */
 bool
 InyectorControlAct_isPressedThrottle(Event *event)

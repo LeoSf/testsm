@@ -34,6 +34,9 @@ extern "C" {
 void InyectorControlAct_init(void);
 
 /* Effect actions */
+void InyectorControlAct_onIdleSpeed(Event *event);
+void InyectorControlAct_onNormal(Event *event);
+
 /* Guard actions */
 bool InyectorControlAct_isPressedThrottle(Event *event);
 bool InyectorControlAct_isReleasedThrottle(Event *event);
